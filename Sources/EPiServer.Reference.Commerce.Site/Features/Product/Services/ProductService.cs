@@ -59,11 +59,13 @@ namespace EPiServer.Reference.Commerce.Site.Features.Product.Services
             _referenceConverter = referenceConverter;
         }
 
-        public IEnumerable<FashionVariant> GetVariations(FashionProduct currentContent)
+        public IEnumerable<TOutput> GetVariations<TInput, TOutput>(TInput currentContent) 
+            where TInput: ProductContent 
+            where TOutput: VariationContent
         {
             return _contentLoader
                 .GetItems(currentContent.GetVariants(_relationRepository), _preferredCulture)
-                .Cast<FashionVariant>()
+                .Cast<TOutput>()
                 .Where(v => v.IsAvailableInCurrentMarket(_currentMarket));
         }
 
@@ -154,7 +156,7 @@ namespace EPiServer.Reference.Commerce.Site.Features.Product.Services
             var discountedPrice = originalPrice.HasValue ? GetDiscountPrice(variation, market, currency, originalPrice.Value) : (Money?)null;
 
             var image = variation.GetAssets<IContentImage>(_contentLoader, _urlResolver).FirstOrDefault() ?? "";
-            var brand = product is FashionProduct ? ((FashionProduct)product).Brand : string.Empty;
+            var brand = product is FashionProduct ? ((FashionProduct)product).Brand : (product is MobileProduct ? ((MobileProduct)product).Brand : string.Empty);
 
             return new ProductViewModel
             {

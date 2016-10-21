@@ -12,6 +12,8 @@ namespace EPiServer.Reference.Commerce.Site.Features.Product.Services
         ProductViewModel GetProductViewModel(ProductContent product);
         ProductViewModel GetProductViewModel(VariationContent variation);
         string GetSiblingVariantCodeBySize(string siblingCode, string size);
-        IEnumerable<FashionVariant> GetVariations(FashionProduct currentContent);
+        IEnumerable<TOutput> GetVariations<TInput, TOutput>(TInput currentContent)
+            where TInput : ProductContent
+            where TOutput : VariationContent;
     }
 }

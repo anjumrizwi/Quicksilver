@@ -21,7 +21,7 @@ using Mediachase.Commerce.Catalog;
 namespace EPiServer.Reference.Commerce.Site.Features.Cart.ViewModelFactories
 {
     [ServiceConfiguration(typeof(CartItemViewModelFactory), Lifecycle = ServiceInstanceScope.Singleton)]
-    public class CartItemViewModelFactory 
+    public class CartItemViewModelFactory
     {
         private readonly IContentLoader _contentLoader;
         private readonly IPricingService _pricingService;
@@ -44,8 +44,8 @@ namespace EPiServer.Reference.Commerce.Site.Features.Cart.ViewModelFactories
             IPromotionService promotionService,
             AppContextFacade appContext,
             ILineItemCalculator lineItemCalculator,
-            IProductService productService, 
-            IRelationRepository relationRepository, 
+            IProductService productService,
+            IRelationRepository relationRepository,
             ICartService cartService)
         {
             _contentLoader = contentLoader;
@@ -93,7 +93,7 @@ namespace EPiServer.Reference.Commerce.Site.Features.Cart.ViewModelFactories
         private IEnumerable<string> GetAvailableSizes(FashionProduct product, VariationContent variant)
         {
             return product != null ?
-                _productService.GetVariations(product).Where(x => x.Color.Equals(((FashionVariant)variant).Color, StringComparison.OrdinalIgnoreCase)).Select(x => x.Size)
+                _productService.GetVariations<FashionProduct, FashionVariant>(product).Where(x => x.Color.Equals(((FashionVariant)variant).Color, StringComparison.OrdinalIgnoreCase)).Select(x => x.Size)
                 : Enumerable.Empty<string>();
         }
 
@@ -106,7 +106,7 @@ namespace EPiServer.Reference.Commerce.Site.Features.Cart.ViewModelFactories
         {
             var marketId = _currentMarket.GetCurrentMarket().MarketId;
             var currency = _currencyService.GetCurrentCurrency();
-            if (cart.Name.Equals(_cartService.DefaultWishListName)) 
+            if (cart.Name.Equals(_cartService.DefaultWishListName))
             {
                 var discountedPrice = _promotionService.GetDiscountPrice(new CatalogKey(_appContext.ApplicationId, lineItem.Code), marketId, currency);
                 return discountedPrice != null ? discountedPrice.UnitPrice : (Money?)null;
